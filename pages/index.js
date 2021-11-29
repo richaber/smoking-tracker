@@ -1,8 +1,11 @@
 import Head from 'next/head'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { DevTool } from '@hookform/devtools'
 import useLocalStorageState from 'use-local-storage-state'
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
+import { format } from 'date-fns'
 
 export default function Home () {
 
@@ -25,7 +28,9 @@ export default function Home () {
           'pit_temp': data.pit_temp,
           'internal_temp': data.internal_temp,
           'cook_time': data.cook_time,
-          'notes': data.notes
+          'notes': data.notes,
+          'datetime_start': data.datetime_start,
+          'datetime_end': data.datetime_end
         }
       ]
     )
@@ -56,8 +61,30 @@ export default function Home () {
                 <div className="">
 
                   <div className="">
+                    <label htmlFor="datetime_start" className="">
+                      Cook Start Date/Time
+                    </label>
+                    <Controller
+                      control={control}
+                      name='datetime_start'
+                      render={({ field }) => (
+                        <DatePicker
+                          showTimeSelect
+                          timeFormat="HH:mm"
+                          timeIntervals={15}
+                          timeCaption="time"
+                          dateFormat="MMMM d, yyyy h:mm aa"
+                          placeholderText='Cook start'
+                          onChange={(date) => field.onChange(date)}
+                          selected={field.value}
+                        />
+                      )}
+                    />
+                  </div>
+
+                  <div className="">
                     <label htmlFor="animal" className="">
-                      What kind of animal are you smoking?
+                      What type of meat are you smoking?
                     </label>
                     <input type="text"
                            placeholder="Pork" {...register('animal', { required: true })} />
@@ -106,6 +133,28 @@ export default function Home () {
                   </div>
 
                   <div className="">
+                    <label htmlFor="datetime_end" className="">
+                      Cook End Date/Time
+                    </label>
+                    <Controller
+                      control={control}
+                      name='datetime_end'
+                      render={({ field }) => (
+                        <DatePicker
+                          showTimeSelect
+                          timeFormat="HH:mm"
+                          timeIntervals={15}
+                          timeCaption="time"
+                          dateFormat="MMMM d, yyyy h:mm aa"
+                          placeholderText='Cook end'
+                          onChange={(date) => field.onChange(date)}
+                          selected={field.value}
+                        />
+                      )}
+                    />
+                  </div>
+
+                  <div className="">
                     <label htmlFor="notes" className="">
                       Notes about your cook.
                     </label>
@@ -140,7 +189,7 @@ export default function Home () {
                    className="flex flex-col md:flex-row overflow-hidden bg-white rounded-lg shadow-xl  mt-4 w-100 mx-2">
                 <div className="w-full py-4 px-6 text-gray-800 flex flex-col justify-between">
                   <h3 className="font-semibold text-lg leading-tight truncate">
-                    {item.animal} {item.cut}
+                    {item.animal} {item.cut} on {format( new Date(item.datetime_start),'PPPPpppp')}
                   </h3>
                   <p className="mt-2">
                     Cooked to an internal temp of {item.internal_temp}° at a pit temp
