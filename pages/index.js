@@ -1,114 +1,169 @@
-import Head from 'next/head';
-import {useState} from "react";
-import useLocalStorageState from 'use-local-storage-state';
+import Head from 'next/head'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { DevTool } from '@hookform/devtools'
+import useLocalStorageState from 'use-local-storage-state'
 
-export default function Home() {
+export default function Home () {
 
-    // useState "Returns a stateful value, and a function to update it."
-    const [query, setQuery] = useState("");
+  const { register, control, handleSubmit, reset, formState: { errors } } = useForm()
 
-    // useLocalStorageState "Returns [value, setValue, { removeItem, isPersistent }]"
-    const [items, setItems, {removeItem, isPersistent}] = useLocalStorageState("items", []);
+  // useLocalStorageState "Returns [value, setValue, { removeItem, isPersistent }]"
+  const [items, setItems, {
+    removeItem,
+    isPersistent
+  }] = useLocalStorageState('items', [])
 
-    function handleSubmit(event) {
-        setQuery("");
-        setItems(
-            [...items, { "ts": Math.round((new Date()).getTime() / 1000), "value": query } ]
-        );
-        event.preventDefault();
-    }
+  const onSubmit = data => {
+    setItems(
+      [
+        ...items,
+        {
+          'ts': Math.round((new Date()).getTime() / 1000),
+          'animal': data.animal,
+          'cut': data.cut,
+          'pit_temp': data.pit_temp,
+          'internal_temp': data.internal_temp,
+          'cook_time': data.cook_time,
+          'notes': data.notes
+        }
+      ]
+    )
+    reset()
+  }
 
-    return (
-        <>
-            <Head>
-                <title>Smoking App</title>
-                <link rel="icon" href="/favicon.ico"/>
-            </Head>
+  return (
+    <>
+      <Head>
+        <title>Smoking App</title>
+        <link rel="icon" href="/favicon.ico"/>
+      </Head>
 
-            <div>
-                <div class="md:grid md:grid-cols-3 md:gap-6">
+      <div className="mt-5 md:mt-0 md:col-span-3">
 
-                    <h1 className="text-3xl font-bold">
-                        Welcome to Smoking App!
-                    </h1>
+          <h1 className="">
+            Welcome to Smoking App!
+          </h1>
 
-                    <div class="mt-5 md:mt-0 md:col-span-3">
+          <div className="">
 
-                        <form onSubmit={handleSubmit}>
+            {/* "handleSubmit" will validate your inputs before invoking "onSubmit" */}
+            <form className="w-full max-w-sm" onSubmit={handleSubmit(onSubmit)}>
+              {/* register your input into the hook by invoking the "register" function */}
 
-                            <div class="shadow sm:rounded-md sm:overflow-hidden">
+              <div className="">
 
-                                <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                <div className="">
 
-                                    <div>
-                                        <label for="about" class="block text-sm font-medium text-gray-700">
-                                            Tell us about your smoking desires
-                                        </label>
-                                        <div class="mt-1">
-                                            <textarea id="smoked" name="smoked" rows="3"
-                                                      className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
-                                                      placeholder="What is it you truly desire to smoke?"
-                                                      onChange={(e) => setQuery(e.target.value)}
-                                                      value={query} />
-                                        </div>
-                                        <p class="mt-2 text-sm text-gray-500 text-center">
-                                            Enter a few sentences describing your smoking desires.
-                                        </p>
-                                    </div>
+                  <div className="">
+                    <label htmlFor="animal" className="">
+                      What kind of animal are you smoking?
+                    </label>
+                    <input type="text"
+                           placeholder="Pork" {...register('animal', { required: true })} />
+                  </div>
 
-                                </div>
+                  <div className="">
+                    <label htmlFor="cut" className="">
+                      What cut of meat are you smoking?
+                    </label>
+                    <input type="text"
+                           placeholder="Butt" {...register('cut', { required: true })} />
+                  </div>
 
-                                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <input type="submit" value="Submit"
-                                           className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"/>
-                                </div>
+                  <div className="">
+                    <label htmlFor="weight" className="">
+                      How much does the cut weigh?
+                    </label>
+                    <input type="text"
+                           placeholder="10 lbs" {...register('weight', { required: true })} />
+                  </div>
 
-                            </div>
-                        </form>
+                  <div className="">
+                    <label htmlFor="pit_temp" className="">
+                      What is your target pit temp?
+                    </label>
+                    <input type="number"
+                           placeholder="275" {...register('pit_temp', { required: true })} />°
+                    F
+                  </div>
 
-                    </div>
+                  <div className="">
+                    <label htmlFor="internal_temp" className="">
+                      What is your target internal meat temp?
+                    </label>
+                    <input type="number"
+                           placeholder="200" {...register('internal_temp', { required: true })} />°
+                    F
+                  </div>
 
-                    <div className="mt-5 md:mt-0 md:col-span-3">
-                        <div id="cards" className="">
-                            <h2 className="text-center uppercase text-4xl xl:text-5xl">
-                                Entries
-                            </h2>
-                            <div className="container w-100 lg:w-4/5 mx-auto flex flex-col">
-                                {items.map((item, index) => (
-                                    <div key={`${index}-${item.value}`}
-                                        className="flex flex-col md:flex-row overflow-hidden bg-white rounded-lg shadow-xl  mt-4 w-100 mx-2">
-                                        <div className="w-full py-4 px-6 text-gray-800 flex flex-col justify-between">
-                                            <h3 className="font-semibold text-lg leading-tight truncate">TITLE</h3>
-                                            <p className="mt-2">
-                                                {item.value}
-                                            </p>
-                                            <p className="text-sm text-gray-700 uppercase tracking-wide font-semibold mt-2">
-                                                {new Date(item.ts * 1000).toString()}
-                                            </p>
-                                        </div>
-                                    </div>
-                                ))}
+                  <div className="">
+                    <label htmlFor="cook_time" className="">
+                      What is your target cook time?
+                    </label>
+                    <input type="text"
+                           placeholder="16 hours" {...register('cook_time', { required: true })} />
+                  </div>
 
-                            </div>
-                        </div>
-                    </div>
+                  <div className="">
+                    <label htmlFor="notes" className="">
+                      Notes about your cook.
+                    </label>
+                    <textarea
+                      placeholder="Using hickory logs, apple chunks, and a water pan..." {...register('notes', { required: true })} />
+                  </div>
 
                 </div>
 
-            </div>
+                <div className="content-center">
+                  <input type="submit" className="h-12 px-6 m-2 text-lg text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"/>
+                </div>
 
-            <footer className="flex items-center justify-center w-full h-24 border-t">
-                <a
-                    className="flex items-center justify-center"
-                    href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Powered by{' '}
-                    <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2"/>
-                </a>
-            </footer>
+              </div>
 
-        </>
-    )
+            </form>
+
+            <DevTool control={control}/> {/* set up the dev tool */}
+
+          </div>
+
+      </div>
+
+      <div className="mt-5 md:mt-0 md:col-span-3">
+        <div id="cards" className="">
+          <h2 className="text-center uppercase text-4xl xl:text-5xl">
+            Entries
+          </h2>
+          <div className="container w-100 lg:w-4/5 mx-auto flex flex-col">
+            {[...items].reverse().map((item, index) => (
+              <div key={`${index}-${item.ts}`}
+                   className="flex flex-col md:flex-row overflow-hidden bg-white rounded-lg shadow-xl  mt-4 w-100 mx-2">
+                <div className="w-full py-4 px-6 text-gray-800 flex flex-col justify-between">
+                  <h3 className="font-semibold text-lg leading-tight truncate">
+                    {item.animal} {item.cut}
+                  </h3>
+                  <p className="mt-2">
+                    Cooked to an internal temp of {item.internal_temp}° at a pit temp
+                    of {item.pit_temp}° for {item.cook_time}
+                  </p>
+                  <p className="mt-2">
+                    {item.notes}
+                  </p>
+                  <p className="text-sm text-gray-700 uppercase tracking-wide font-semibold mt-2">
+                    {new Date(item.ts * 1000).toString()}
+                  </p>
+                </div>
+              </div>
+            ))}
+
+          </div>
+        </div>
+      </div>
+
+      <footer className="flex items-center justify-center w-full h-24 border-t">
+        Smokin'!
+      </footer>
+
+    </>
+  )
 }
