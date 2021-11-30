@@ -191,7 +191,7 @@ export default function Home () {
                     {item.notes}
                   </p>
                   <p className="text-sm text-gray-700 uppercase tracking-wide font-semibold mt-2">
-                    {new Date(item.ts * 1000).toString()}
+                    Posted on {new Date(item.ts * 1000).toString()}
                   </p>
                 </div>
               </div>
