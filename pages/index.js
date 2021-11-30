@@ -42,7 +42,7 @@ export default function Home () {
   return (
     <>
       <Head>
-        <title>Smoking App</title>
+        <title>The Pitmaster's Wood Pile</title>
         <link rel="icon" href="/favicon.ico"/>
       </Head>
 
