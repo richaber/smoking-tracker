@@ -1,11 +1,13 @@
 import Head from 'next/head'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { ErrorMessage } from '@hookform/error-message'
 import { DevTool } from '@hookform/devtools'
 import useLocalStorageState from 'use-local-storage-state'
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 import { format, formatDistance } from 'date-fns'
+import { v4 as uuidv4 } from 'uuid'
 
 export default function Home () {
 
