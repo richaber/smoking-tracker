@@ -24,6 +24,7 @@ export default function Home () {
       [
         ...items,
         {
+          'id': uuidv4(),
           'ts': Math.round((new Date()).getTime() / 1000),
           'animal': data.animal,
           'cut': data.cut,
