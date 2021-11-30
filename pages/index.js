@@ -174,8 +174,8 @@ export default function Home () {
 
       <div className="mt-5 md:mt-0 md:col-span-3">
         <div id="cards" className="">
-          <h2 className="text-center uppercase text-4xl xl:text-5xl">
-            Entries
+          <h2 className="text-center font-semibold text-xl tracking-tight">
+            The Pitmaster’s Logs
           </h2>
           <div className="container w-100 lg:w-4/5 mx-auto flex flex-col">
             {[...items].reverse().map((item, index) => (
