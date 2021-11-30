@@ -80,7 +80,7 @@ export default function Home () {
   return (
     <>
       <Head>
-        <title>The Pitmaster's Wood Pile</title>
+        <title>The Pitmaster’s Wood Pile</title>
         <link rel="icon" href="/favicon.ico"/>
       </Head>
 
@@ -88,7 +88,7 @@ export default function Home () {
         className="flex items-center justify-between flex-wrap bg-gray-100 p-6 shadow-xl">
         <div className="flex items-center flex-no-shrink mr-6">
           <h1 className="font-semibold text-xl tracking-tight">
-            Welcome to the Pitmaster's Wood Pile!
+            Welcome to the Pitmaster’s Wood Pile!
           </h1>
         </div>
       </header>
