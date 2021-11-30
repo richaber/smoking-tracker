@@ -11,7 +11,16 @@ import { v4 as uuidv4 } from 'uuid'
 
 export default function Home () {
 
-  const { register, control, handleSubmit, reset, formState: { errors } } = useForm()
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    setError,
+    formState
+  } = useForm({})
+
+  const { errors, isSubmitting } = formState
 
   // useLocalStorageState "Returns [value, setValue, { removeItem, isPersistent }]"
   const [items, setItems, {
@@ -38,6 +47,35 @@ export default function Home () {
     )
     reset()
   }
+
+  function ErrorSummary ({ errors }) {
+    if (Object.keys(errors).length === 0) {
+      return null
+    }
+    return (
+      <div className="alert">
+        <div className="bg-red-500 text-white font-bold rounded-t px-4 py-2">
+          There were errors with your submission.
+        </div>
+        <div
+          className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+          {Object.keys(errors).map((fieldName) => (
+            <ErrorMessage
+              errors={errors}
+              name={fieldName}
+              key={fieldName}
+              render={({ message }) => <p>{message}</p>}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  const ErrorMessageContainer = ({ children }) => (
+    <span
+      className="bg-red-50 text-red-700 px-3 rounded relative">{children}</span>
+  )
 
   return (
     <>
