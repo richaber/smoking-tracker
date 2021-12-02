@@ -23,12 +23,14 @@ export default function LogForm () {
 
   const onSubmit = async (data) => {
     console.log('data', data)
+    // get the current timestamp
+    const timestamp = new Date().getTime()
     // create a pointer to our Document
     const _item = doc(firestore, `items/${timestamp}`)
     // structure the item data
     const itemData = {
       'id': uuidv4(),
-      'ts': new Date().getTime(),
+      'ts': timestamp,
       'author': 'richaber@gmail.com', // @todo Hard-code until I figure out auth
       'animal': data.animal,
       'cut': data.cut,
