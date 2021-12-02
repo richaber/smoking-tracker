@@ -1,12 +1,12 @@
 import { Controller, useForm } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
 import { DevTool } from '@hookform/devtools'
-import { useLocalStorageState } from 'use-local-storage-state'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { formatDistance } from 'date-fns'
 import { v4 as uuidv4 } from 'uuid'
 import LogCards from '../components/LogCards'
+import { doc, setDoc } from '@firebase/firestore'
+import { firestore } from '../firebase/clientApp'
 
 export default function LogForm () {
 
@@ -21,34 +21,31 @@ export default function LogForm () {
 
   const { errors, isSubmitting } = formState
 
-  // useLocalStorageState "Returns [value, setValue, { removeItem, isPersistent }]"
-  const [
-    items,
-    setItems,
-    {
-      removeItem,
-      isPersistent
+  const onSubmit = async (data) => {
+    console.log('data', data)
+    // create a pointer to our Document
+    const _item = doc(firestore, `items/${timestamp}`)
+    // structure the item data
+    const itemData = {
+      'id': uuidv4(),
+      'ts': new Date().getTime(),
+      'author': 'richaber@gmail.com', // @todo Hard-code until I figure out auth
+      'animal': data.animal,
+      'cut': data.cut,
+      'pit_temp': data.pit_temp,
+      'internal_temp': data.internal_temp,
+      'notes': data.notes,
+      'datetime_start': new Date(data.datetime_start).getTime(),
+      'datetime_end': new Date(data.datetime_end).getTime()
     }
-  ] = useLocalStorageState('items', [])
 
-  const onSubmit = data => {
-    setItems(
-      [
-        ...items,
-        {
-          'id': uuidv4(),
-          'ts': Math.round((new Date()).getTime() / 1000),
-          'animal': data.animal,
-          'cut': data.cut,
-          'pit_temp': data.pit_temp,
-          'internal_temp': data.internal_temp,
-          'notes': data.notes,
-          'datetime_start': data.datetime_start,
-          'datetime_end': data.datetime_end
-        }
-      ]
-    )
-    reset()
+    try {
+      console.log('itemData', itemData)
+      await setDoc(_item, itemData)
+      reset()
+    } catch (error) {
+      setError('apiError', { message: error })
+    }
   }
 
   function ErrorSummary ({ errors }) {
@@ -301,8 +298,7 @@ export default function LogForm () {
         </div>
       </section>
 
-
-      <LogCards items={items} />
+      <LogCards/>
 
     </>
   )
