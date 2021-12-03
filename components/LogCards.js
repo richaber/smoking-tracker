@@ -21,26 +21,27 @@ export default function LogCards () {
 
   const [loading, setLoading] = useState(true)
 
+  // Not sure if this is "the right way" but need some reference to the "current" items
+  // in the useEffect hook, in order to update with onSnapshot changes.
   const itemsRef = useRef( items )
 
   useEffect(() => {
 
     const itemsCollection = collection(firestore, 'items')
 
-    // Moved inside "useEffect" to avoid re-creating on render
     const handleItemsChanges = (snapshot) => {
       const changes = snapshot.docChanges()
       console.log('changes', changes)
 
-      // Accumulate differences
-      // let difference = 0
+      // Need to figure out how to deal with the reindexing of objects...
+      // newIndex: 0
+      // oldIndex: -1
       changes.forEach((change) => {
         if (change.type === 'added') {
           itemsRef.current.push( change.doc )
-          // difference += 1
         }
         if (change.type === 'removed') {
-          // difference -= 1
+          // Need to figure out how to handle when one is removed.
         }
       })
 
