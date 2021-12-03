@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import 'react-datepicker/dist/react-datepicker.css'
 import { formatDistance } from 'date-fns'
-import { firestore } from '../firebase/clientApp'
+import { firebase } from '../firebase/clientApp'
 
 import {
+  onSnapshot,
+  getFirestore,
   collection,
   query,
   where,
@@ -11,39 +13,58 @@ import {
   getDocs
 } from '@firebase/firestore'
 
-export default function LogCards () {
+const firestore = getFirestore( firebase );
 
-  const itemsCollection = collection(firestore, 'items')
+export default function LogCards () {
 
   const [items, setItems] = useState([])
 
   const [loading, setLoading] = useState(true)
 
-  const getItems = async () => {
+  const itemsRef = useRef( items )
+
+  useEffect(() => {
+
+    const itemsCollection = collection(firestore, 'items')
+
+    // Moved inside "useEffect" to avoid re-creating on render
+    const handleItemsChanges = (snapshot) => {
+      const changes = snapshot.docChanges()
+      console.log('changes', changes)
+
+      // Accumulate differences
+      // let difference = 0
+      changes.forEach((change) => {
+        if (change.type === 'added') {
+          itemsRef.current.push( change.doc )
+          // difference += 1
+        }
+        if (change.type === 'removed') {
+          // difference -= 1
+        }
+      })
+
+      console.log( 'itemsRef.current', itemsRef.current );
+
+      // Use the setState callback
+      setItems( items )
+      setLoading( false )
+    }
+
     const itemsQuery = query(
       itemsCollection,
       where('author', '==', 'richaber@gmail.com'),
       limit(1000)
     )
 
-    const querySnapshot = await getDocs(itemsQuery)
-
-    const result = []
-
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, ' => ', doc.data())
-      result.push(doc)
-    })
-
-    setItems(result)
-  }
-
-  useEffect(() => {
-    getItems()
-    setTimeout(() => {
-      setLoading(false)
-    }, 2000)
+    // Create the DB listener
+    const unsubscribe = onSnapshot( itemsQuery, handleItemsChanges,
+      err => console.log(err))
+    return () => {
+      unsubscribe()
+    }
   }, [])
+
 
   return (
     <>
