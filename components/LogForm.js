@@ -5,10 +5,8 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { v4 as uuidv4 } from 'uuid'
 import LogCards from '../components/LogCards'
-import { getFirestore, doc, setDoc } from '@firebase/firestore'
-import { firebase } from '../firebase/clientApp'
-
-const firestore = getFirestore( firebase );
+import { doc, setDoc } from '@firebase/firestore'
+import { firestore } from '../firebase/fireStore'
 
 export default function LogForm () {
 
