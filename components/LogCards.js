@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import 'react-datepicker/dist/react-datepicker.css'
 import { formatDistance } from 'date-fns'
 import { firestore } from '../firebase/fireStore'
+import { signIn, signOut, useSession } from 'next-auth/client'
 
 import {
   collection,
@@ -13,6 +14,8 @@ import {
 } from '@firebase/firestore'
 
 export default function LogCards () {
+
+  const [ session, loading ] = useSession()
 
   const [items, setItems] = useState([])
 
@@ -66,7 +69,7 @@ export default function LogCards () {
 
     const itemsQuery = query(
       itemsCollection,
-      where('author', '==', 'richaber@gmail.com'),
+      where('author', '==', session.user.email),
       limit(1000)
     )
 
