@@ -1,7 +1,7 @@
 import {
   CACHE_SIZE_UNLIMITED,
   initializeFirestore,
-} from '@firebase/firestore'
+} from 'firebase/firestore'
 
 import { firebase } from './clientApp'
 

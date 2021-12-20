@@ -5,8 +5,9 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { v4 as uuidv4 } from 'uuid'
 import LogCards from '../components/LogCards'
-import { doc, setDoc } from '@firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 import { firestore } from '../firebase/fireStore'
+import { signIn, signOut, useSession } from 'next-auth/client'
 
 export default function LogForm () {
 
@@ -18,6 +19,8 @@ export default function LogForm () {
     setError,
     formState
   } = useForm({})
+
+  const [ session, loading ] = useSession()
 
   const { errors, isSubmitting } = formState
 
@@ -31,7 +34,7 @@ export default function LogForm () {
     const itemData = {
       'id': uuidv4(),
       'ts': timestamp,
-      'author': 'richaber@gmail.com', // @todo Hard-code until I figure out auth
+      'author': session.user.email,
       'animal': data.animal,
       'cut': data.cut,
       'pit_temp': data.pit_temp,
