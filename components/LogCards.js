@@ -15,7 +15,7 @@ import {
 
 export default function LogCards () {
 
-  const [ session, loading ] = useSession()
+  const [ session ] = useSession()
 
   const [items, setItems] = useState([])
 
