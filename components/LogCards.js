@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import 'react-datepicker/dist/react-datepicker.css'
 import { formatDistance } from 'date-fns'
-import { firestore } from '../firebase/fireStore'
-import { signIn, signOut, useSession } from 'next-auth/client'
+import { fireStore } from '../firebase/fireStore'
+import { signIn, signOut, useSession } from 'next-auth/react'
 
 import {
   collection,
@@ -11,11 +11,11 @@ import {
   onSnapshot,
   query,
   where
-} from '@firebase/firestore'
+} from 'firebase/firestore'
 
 export default function LogCards () {
 
-  const [ session ] = useSession()
+  const { data: session, status } = useSession()
 
   const [items, setItems] = useState([])
 
@@ -27,7 +27,7 @@ export default function LogCards () {
 
   useEffect(() => {
 
-    enableIndexedDbPersistence(firestore)
+    enableIndexedDbPersistence(fireStore)
       .catch((err) => {
         if (err.code === 'failed-precondition') {
           // Multiple tabs open, persistence can only be enabled
@@ -42,7 +42,7 @@ export default function LogCards () {
         }
       })
 
-    const itemsCollection = collection(firestore, 'items')
+    const itemsCollection = collection(fireStore, 'items')
 
     const handleItemsChanges = (snapshot) => {
       const changes = snapshot.docChanges()

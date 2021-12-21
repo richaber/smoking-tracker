@@ -1,15 +1,7 @@
-import {
-  CACHE_SIZE_UNLIMITED,
-  initializeFirestore,
-} from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore'
 
-import { firebase } from './clientApp'
+import { firebaseApp } from './firebaseApp'
 
-const firestore = initializeFirestore(
-  firebase,
-  {
-    cacheSizeBytes: CACHE_SIZE_UNLIMITED
-  }
-)
+const fireStore = getFirestore( firebaseApp )
 
-export { firestore }
+export { fireStore }

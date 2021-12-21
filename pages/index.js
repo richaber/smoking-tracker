@@ -1,14 +1,17 @@
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
 
-import { useSession } from 'next-auth/client'
+import { useSession } from 'next-auth/react'
 import Layout from '../components/Layout'
 import AccessDenied from '../components/AccessDenied'
 import LogForm from '../components/LogForm'
 
 export default function Page () {
-  const [ session, loading ] = useSession()
+
+  const { data: session, status } = useSession()
+
   const [ content , setContent ] = useState()
+  const loading = status === "loading"
 
   // Fetch content from protected route
   useEffect(()=>{

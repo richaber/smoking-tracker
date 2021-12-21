@@ -6,8 +6,8 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { v4 as uuidv4 } from 'uuid'
 import LogCards from '../components/LogCards'
 import { doc, setDoc } from 'firebase/firestore'
-import { firestore } from '../firebase/fireStore'
-import { signIn, signOut, useSession } from 'next-auth/client'
+import { fireStore } from '../firebase/fireStore'
+import { signIn, signOut, useSession } from 'next-auth/react'
 
 export default function LogForm () {
 
@@ -20,7 +20,7 @@ export default function LogForm () {
     formState
   } = useForm({})
 
-  const [ session, loading ] = useSession()
+  const { data: session, status } = useSession()
 
   const { errors, isSubmitting } = formState
 
@@ -29,7 +29,7 @@ export default function LogForm () {
     // get the current timestamp
     const timestamp = new Date().getTime()
     // create a pointer to our Document
-    const _item = doc(firestore, `items/${timestamp}`)
+    const _item = doc(fireStore, `items/${timestamp}`)
     // structure the item data
     const itemData = {
       'id': uuidv4(),
