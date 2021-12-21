@@ -118,7 +118,7 @@ export default function LogCards () {
                   </div>
                 </div>
               ) : (
-                items.map((item) => {
+                [...items].reverse().map((item) => {
                   let data = item.data()
                   console.log('data', data)
                   return (
